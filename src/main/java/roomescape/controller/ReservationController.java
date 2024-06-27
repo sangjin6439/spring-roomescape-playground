@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import jakarta.validation.Valid;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequestDto;
+import roomescape.global.CustomException;
+import roomescape.global.ErrorCode;
 
 @Controller
 public class ReservationController {
@@ -27,25 +30,25 @@ public class ReservationController {
     private AtomicLong index = new AtomicLong(0);
 
     @GetMapping("/reservation")
-    public String reservation(){
+    public String reservation() {
         return "reservation";
     }
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> Reservations(){
+    public List<Reservation> Reservations() {
         return reservations;
     }
 
     @GetMapping("/reservation/{id}")
     @ResponseBody
-    public Reservation reservation(@PathVariable("id") int id){
+    public Reservation reservation(@PathVariable("id") int id) {
         return reservations.get(id);
     }
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequestDto requestDto){
+    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationRequestDto requestDto) {
 
         Reservation reservation = new Reservation(index.incrementAndGet(), requestDto.getName(), requestDto.getDate(), requestDto.getTime());
         reservations.add(reservation);
@@ -59,8 +62,12 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
-    public ResponseEntity<Void> deleteReservation(@PathVariable("id") int id){
-        reservations.removeIf(reservation -> reservation.getId().equals(Long.valueOf(id)));
-       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteReservation(@PathVariable("id") int id) {
+        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(Long.valueOf(id)));
+        if (removed) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            throw new CustomException(ErrorCode.Reservation_Not_Found);
+        }
     }
 }
