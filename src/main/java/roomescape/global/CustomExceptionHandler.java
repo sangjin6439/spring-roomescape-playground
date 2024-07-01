@@ -10,6 +10,5 @@ public class CustomExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity handleException(CustomException e){
         return ResponseEntity.badRequest().build();
-
     }
 }

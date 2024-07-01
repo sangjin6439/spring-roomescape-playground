@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
-    Reservation_Not_Found(HttpStatus.NOT_FOUND);
+    RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST);
 
     ErrorCode(final HttpStatus httpStatus) {
     }

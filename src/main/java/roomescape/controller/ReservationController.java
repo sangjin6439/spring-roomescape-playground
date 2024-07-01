@@ -36,8 +36,8 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public List<Reservation> Reservations() {
-        return reservations;
+    public ResponseEntity<List<Reservation>> reservations() {
+        return ResponseEntity.ok(reservations);
     }
 
     @GetMapping("/reservation/{id}")
@@ -57,17 +57,16 @@ public class ReservationController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
 
-        return new ResponseEntity<>(reservation, headers, HttpStatus.CREATED);
+        return ResponseEntity.created(location).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") int id) {
         boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(Long.valueOf(id)));
-        if (removed) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            throw new CustomException(ErrorCode.Reservation_Not_Found);
+        if (!removed) {
+            throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
+        return ResponseEntity.noContent().build();
     }
 }
