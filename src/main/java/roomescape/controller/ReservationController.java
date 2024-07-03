@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import jakarta.validation.Valid;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequestDto;
 import roomescape.global.CustomException;
 import roomescape.global.ErrorCode;
+import roomescape.repository.ReservationRepository;
 
 @Controller
 public class ReservationController {
@@ -31,8 +30,8 @@ public class ReservationController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private AtomicLong index = new AtomicLong(0);
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @GetMapping("/reservation")
     public String reservation() {
@@ -42,22 +41,22 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> reservations() {
-        List<Reservation> reservations = jdbcTemplate.query("select * from reservation", (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
+        List<Reservation> reservations = reservationRepository.findAll();
         return ResponseEntity.ok(reservations);
     }
 
     @GetMapping("/reservation/{id}")
     @ResponseBody
-    public ResponseEntity<Reservation> reservation(@PathVariable("id") int id) {
-        return new ResponseEntity<>(reservations.get(id),HttpStatus.OK);
+    public ResponseEntity<Reservation> reservation(@PathVariable("id") Long id) {
+        Reservation reservation = reservationRepository.findById(id);
+        return new ResponseEntity<>(reservation, HttpStatus.OK);
     }
 
     @PostMapping("/reservations")
     @ResponseBody
     public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationRequestDto requestDto) {
 
-        Reservation reservation = new Reservation(index.incrementAndGet(), requestDto.getName(), requestDto.getDate(), requestDto.getTime());
-        reservations.add(reservation);
+        Reservation reservation = reservationRepository.insert(new Reservation(requestDto.getName(), requestDto.getDate(), requestDto.getTime()));
 
         URI location = UriComponentsBuilder.fromPath("/reservations/{id}").buildAndExpand(reservation.getId()).toUri();
         HttpHeaders headers = new HttpHeaders();
@@ -68,8 +67,8 @@ public class ReservationController {
 
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
-    public ResponseEntity<Void> deleteReservation(@PathVariable("id") int id) {
-        boolean removed = reservations.removeIf(reservation -> reservation.getId().equals(Long.valueOf(id)));
+    public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
+        boolean removed = reservationRepository.deleteById(id);
         if (!removed) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }

@@ -1,15 +1,14 @@
 package roomescape.domain;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
-
 public class Reservation {
 
     private Long id;
     private String name;
     private String date;
     private String time;
+
+    public Reservation() {
+    }
 
     public Reservation(final Long id, final String name, final String date, final String time) {
         this.id = id;
@@ -18,6 +17,11 @@ public class Reservation {
         this.time = time;
     }
 
+    public Reservation(final String name, final String date, final String time) {
+        this.name = name;
+        this.date = date;
+        this.time = time;
+    }
 
     public Long getId() {
         return id;
@@ -33,5 +37,9 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    public void setId(final long id) {
+        this.id = id;
     }
 }
