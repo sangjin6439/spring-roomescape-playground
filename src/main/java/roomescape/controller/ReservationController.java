@@ -42,8 +42,8 @@ public class ReservationController {
 
     @GetMapping("/reservation/{id}")
     @ResponseBody
-    public Reservation reservation(@PathVariable("id") int id) {
-        return reservations.get(id);
+    public ResponseEntity<Reservation> reservation(@PathVariable("id") int id) {
+        return new ResponseEntity<>(reservations.get(id),HttpStatus.OK);
     }
 
     @PostMapping("/reservations")
