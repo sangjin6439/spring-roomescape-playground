@@ -14,8 +14,11 @@ import roomescape.domain.Reservation;
 @Repository
 public class ReservationRepository {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReservationRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Reservation insert(Reservation reservation) {
         String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
@@ -33,15 +36,15 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAll() {
-        return jdbcTemplate.query("select * from reservation", (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
+        return jdbcTemplate.query("SELECT * FROM reservation", (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
     }
 
     public Reservation findById(Long id) {
-        return jdbcTemplate.queryForObject("select * from reservation where id = ?", new Object[]{id}, (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
+        return jdbcTemplate.queryForObject("SELECT * FROM reservation where id = ?", new Object[]{id}, (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
     }
 
     public boolean deleteById(Long id) {
-        if(jdbcTemplate.update("delete from reservation where id = ?", id)==1){
+        if(jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id)==1){
             return true;
         };
         return false;
