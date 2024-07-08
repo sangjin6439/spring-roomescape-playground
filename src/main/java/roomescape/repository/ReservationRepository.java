@@ -1,38 +1,38 @@
 package roomescape.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import roomescape.domain.Reservation;
+import roomescape.dto.ReservationRequestDto;
 
 @Repository
 public class ReservationRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public ReservationRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("reservation")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation insert(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+    public Reservation insert(ReservationRequestDto reservationDto) {
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(cn->{
-            PreparedStatement ps = cn.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, reservation.getName());
-            ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
-            return ps;
-            }, keyHolder);
-        reservation.setId(keyHolder.getKey().longValue());
-        return reservation;
+        Map<String, Object> reservations = new HashMap<>();
+        reservations.put("name", reservationDto.getName());
+        reservations.put("date", reservationDto.getDate());
+        reservations.put("time", reservationDto.getTime());
+        Long newId = simpleJdbcInsert.executeAndReturnKeyHolder(reservations).getKey().longValue();
+
+        return new Reservation(newId, reservationDto.getName(), reservationDto.getDate(), reservationDto.getTime());
     }
 
     public List<Reservation> findAll() {
@@ -44,9 +44,10 @@ public class ReservationRepository {
     }
 
     public boolean deleteById(Long id) {
-        if(jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id)==1){
+        if (jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id) == 1) {
             return true;
-        };
+        }
+        ;
         return false;
     }
 }

@@ -29,6 +29,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
+    @DisplayName(" 어드민 페이지 접근")
     void 일단계() {
         RestAssured.given().log().all()
                 .when().get("/")
@@ -37,6 +38,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 관리 페이지 접근 및 예약 리스트 조회")
     void 이단계() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
@@ -86,6 +88,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 저장 시 정상 인자가 아닐 때 예외 확인, 삭제할 예약 없을 시 예외 확인")
     void 사단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -108,6 +111,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("jdbcTemplate을 이용한 DataBase 연결 확인")
     void 오단계() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
@@ -119,6 +123,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 생성 후 DB 저장 확인 및 행 수 증가 확인")
     void 육단계() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
 
@@ -134,6 +139,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("예약 생성 후 ID 값 반환, 행 수 증가 확인 및 예약 삭제 후 행 수 확인")
     void 칠단계() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");

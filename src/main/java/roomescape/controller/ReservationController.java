@@ -52,9 +52,9 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationRequestDto requestDto) {
+    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationRequestDto reservationDto) {
 
-        Reservation reservation = reservationRepository.insert(new Reservation(requestDto.getName(), requestDto.getDate(), requestDto.getTime()));
+        Reservation reservation = reservationRepository.insert(reservationDto);
 
         URI location = UriComponentsBuilder.fromPath("/reservations/{id}").buildAndExpand(reservation.getId()).toUri();
         HttpHeaders headers = new HttpHeaders();
