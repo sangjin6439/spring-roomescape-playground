@@ -32,8 +32,4 @@ public class Reservation {
     public String getTime() {
         return time;
     }
-
-    public void setId(final long id) {
-        this.id = id;
-    }
 }

@@ -2,7 +2,7 @@ package roomescape.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class ReservationRequestDto {
+public class RequestReservationDto {
 
     @NotBlank
     private String date;

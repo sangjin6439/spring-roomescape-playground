@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import roomescape.domain.Reservation;
-import roomescape.dto.ReservationRequestDto;
+import roomescape.dto.RequestReservationDto;
 
 @Repository
 public class ReservationRepository {
@@ -21,10 +21,11 @@ public class ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reservation")
+                .usingColumns("name", "date", "time")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation insert(ReservationRequestDto reservationDto) {
+    public Reservation insert(RequestReservationDto reservationDto) {
 
         Map<String, Object> reservations = new HashMap<>();
         reservations.put("name", reservationDto.getName());
@@ -40,14 +41,13 @@ public class ReservationRepository {
     }
 
     public Reservation findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM reservation where id = ?", new Object[]{id}, (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
+        return jdbcTemplate.queryForObject("SELECT * FROM reservation WHERE id = ?", new Object[]{id}, (rs, rowNum) -> new Reservation(rs.getLong("id"), rs.getString("name"), rs.getString("date"), rs.getString("time")));
     }
 
     public boolean deleteById(Long id) {
         if (jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id) == 1) {
             return true;
         }
-        ;
         return false;
     }
 }
