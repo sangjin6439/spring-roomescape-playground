@@ -24,9 +24,15 @@ public class ReservationRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(Map<String, Object> reservation) {
+    public Reservation insert(Map<String, String> reservation) {
         Long reservationId = simpleJdbcInsert.executeAndReturnKeyHolder(reservation).getKey().longValue();
-        return reservationId;
+        Time time = findTimeById(reservationId);
+
+        return new Reservation(reservationId, reservation.get("name"), reservation.get("date"), time);
+    }
+
+    private Time findTimeById(Long id) {
+        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{id}, ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))));
     }
 
     public List<Reservation> findAll() {

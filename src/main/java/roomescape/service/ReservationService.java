@@ -28,15 +28,14 @@ public class ReservationService {
     @Transactional
     public Reservation createReservation(RequestReservationDto reservationDto){
 
-        Map<String, Object> reservations = new HashMap<>();
+        Map<String, String> reservations = new HashMap<>();
         reservations.put("name", reservationDto.getName());
         reservations.put("date", reservationDto.getDate());
         reservations.put("time_id", reservationDto.getTime());
 
-        Long reservationId = reservationRepository.insert(reservations);
-        Time time = timeRepository.findTimeById(Long.valueOf(reservationDto.getTime()));
+        Reservation reservation = reservationRepository.insert(reservations);
 
-        return new Reservation(reservationId, reservationDto.getName(), reservationDto.getDate(), time);
+        return  reservation;
     }
 
     public List<Reservation> findAll(){

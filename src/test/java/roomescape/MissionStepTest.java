@@ -22,6 +22,9 @@ import io.restassured.http.ContentType;
 import roomescape.controller.ReservationController;
 import roomescape.controller.TimeController;
 import roomescape.domain.Reservation;
+import roomescape.domain.Time;
+import roomescape.repository.TimeRepository;
+import roomescape.service.TimeService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -33,6 +36,8 @@ public class MissionStepTest {
     private ReservationController reservationController;
     @Autowired
     private TimeController timeController;
+    @Autowired
+    private TimeRepository timeRepository;
 
 
     @Test
@@ -62,14 +67,20 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 생성 후 조회 및 유저 삭제 후 조회")
     void 삼단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", "2023-08-05");
-        params.put("time", "15:40");
+
+        //시간 추가
+        Map<String, String> times = new HashMap<>();
+        times.put("time","15:40");
+        Time time = timeRepository.insert(times);
+
+        Map<String, String> reservations = new HashMap<>();
+        reservations.put("name", "브라운");
+        reservations.put("date", "2023-08-05");
+        reservations.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(params)
+                .body(reservations)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(201)
@@ -132,7 +143,13 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 생성 후 DB 저장 확인 및 행 수 증가 확인")
     void 육단계() {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2023-08-05", "15:40");
+
+        //시간 추가
+        Map<String, String> times = new HashMap<>();
+        times.put("time","15:40");
+        Time time = timeRepository.insert(times);
+
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)", "브라운", "2023-08-05", "1");
 
         List<Reservation> reservations = RestAssured.given().log().all()
                 .when().get("/reservations")
@@ -148,10 +165,16 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 생성 후 ID 값 반환, 행 수 증가 확인 및 예약 삭제 후 행 수 확인")
     void 칠단계() {
+
+        //시간 추가
+        Map<String, String> times = new HashMap<>();
+        times.put("time","15:40");
+        Time time = timeRepository.insert(times);
+
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
         params.put("date", "2023-08-05");
-        params.put("time", "10:00");
+        params.put("time", "1");
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

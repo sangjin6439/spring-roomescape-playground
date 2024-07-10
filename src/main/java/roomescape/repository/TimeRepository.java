@@ -23,9 +23,9 @@ public class TimeRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(Map<String, Object> times) {
+    public Time insert(Map<String, String> times) {
         Long newId = simpleJdbcInsert.executeAndReturnKeyHolder(times).getKey().longValue();
-        return newId;
+        return new Time(newId, times.get("time"));
     }
 
     public List<Time> finaAll() {

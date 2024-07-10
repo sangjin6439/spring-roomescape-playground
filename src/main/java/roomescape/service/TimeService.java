@@ -25,12 +25,12 @@ public class TimeService {
     @Transactional
     public Time createTime(RequestTimeDto timeDto) {
 
-        Map<String, Object> times = new HashMap<>();
+        Map<String, String> times = new HashMap<>();
         times.put("time", timeDto.getTime());
 
-        Long newId = timeRepository.insert(times);
+        Time time = timeRepository.insert(times);
 
-        return new Time(newId, timeDto.getTime());
+        return time;
     }
 
     public List<Time> findAll() {
