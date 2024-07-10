@@ -20,6 +20,7 @@ import java.util.Map;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import roomescape.controller.ReservationController;
+import roomescape.controller.TimeController;
 import roomescape.domain.Reservation;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -30,6 +31,9 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private ReservationController reservationController;
+    @Autowired
+    private TimeController timeController;
+
 
     @Test
     @DisplayName(" 어드민 페이지 접근")
@@ -217,6 +221,21 @@ public class MissionStepTest {
         boolean isJdbcTemplateInjected = false;
 
         for (Field field : reservationController.getClass().getDeclaredFields()) {
+            if (field.getType().equals(JdbcTemplate.class)) {
+                isJdbcTemplateInjected = true;
+                break;
+            }
+        }
+
+        assertThat(isJdbcTemplateInjected).isFalse();
+    }
+
+    @Test
+    @DisplayName("TimeController, JdbcTemplate 분리 및 계층화 검증")
+    void Time_Controller_계층화() {
+        boolean isJdbcTemplateInjected = false;
+
+        for (Field field : timeController.getClass().getDeclaredFields()) {
             if (field.getType().equals(JdbcTemplate.class)) {
                 isJdbcTemplateInjected = true;
                 break;
