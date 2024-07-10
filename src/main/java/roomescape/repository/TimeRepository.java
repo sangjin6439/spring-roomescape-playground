@@ -4,12 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import roomescape.domain.Time;
-import roomescape.dto.RequestTimeDto;
 
 @Repository
 public class TimeRepository {
@@ -25,19 +23,20 @@ public class TimeRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Time insert(RequestTimeDto timeDto) {
-        Map<String, Object> times = new HashMap<>();
-        times.put("time", timeDto.getTime());
+    public Long insert(Map<String, Object> times) {
         Long newId = simpleJdbcInsert.executeAndReturnKeyHolder(times).getKey().longValue();
-
-        return new Time(newId, timeDto.getTime());
+        return newId;
     }
 
     public List<Time> finaAll() {
         return jdbcTemplate.query("SELECT * FROM time", (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time")));
     }
 
+    public Time findTimeById(Long id) {
+        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{id}, ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))));
+    }
+
     public boolean deleteById(Long id) {
-       return jdbcTemplate.update("DELETE FROM time WHERE id = ?", id) == 1;
+        return jdbcTemplate.update("DELETE FROM time WHERE id = ?", id) == 1;
     }
 }

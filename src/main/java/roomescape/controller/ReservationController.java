@@ -19,15 +19,15 @@ import roomescape.domain.Reservation;
 import roomescape.dto.RequestReservationDto;
 import roomescape.global.CustomException;
 import roomescape.global.ErrorCode;
-import roomescape.repository.ReservationRepository;
+import roomescape.service.ReservationService;
 
 @Controller
 public class ReservationController {
 
-    private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
-    public ReservationController(final ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationController(final ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/reservation")
@@ -39,7 +39,7 @@ public class ReservationController {
     @ResponseBody
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody RequestReservationDto reservationDto) {
 
-        Reservation reservation = reservationRepository.insert(reservationDto);
+        Reservation reservation = reservationService.createReservation(reservationDto);
 
         URI location = UriComponentsBuilder.fromPath("/reservations/{id}").buildAndExpand(reservation.getId()).toUri();
         HttpHeaders headers = new HttpHeaders();
@@ -51,21 +51,21 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> findAllReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> reservations = reservationService.findAll();
         return ResponseEntity.ok(reservations);
     }
 
     @GetMapping("/reservation/{id}")
     @ResponseBody
     public ResponseEntity<Reservation> findReservationById(@PathVariable("id") Long id) {
-        Reservation reservation = reservationRepository.findById(id);
+        Reservation reservation = reservationService.findById(id);
         return ResponseEntity.ok(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservationById(@PathVariable("id") Long id) {
-        boolean removed = reservationRepository.deleteById(id);
+        boolean removed = reservationService.deleteById(id);
         if (!removed) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }

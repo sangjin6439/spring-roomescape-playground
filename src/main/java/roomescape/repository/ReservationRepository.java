@@ -4,13 +4,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-import roomescape.dto.RequestReservationDto;
 
 @Repository
 public class ReservationRepository {
@@ -26,19 +24,9 @@ public class ReservationRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Reservation insert(RequestReservationDto reservationDto) {
-
-        Map<String, Object> reservations = new HashMap<>();
-        reservations.put("name", reservationDto.getName());
-        reservations.put("date", reservationDto.getDate());
-        reservations.put("time_id", reservationDto.getTime());
-        Long reservationId = simpleJdbcInsert.executeAndReturnKeyHolder(reservations).getKey().longValue();
-
-        return new Reservation(reservationId, reservationDto.getName(), reservationDto.getDate(), findTimeById(Long.valueOf(reservationDto.getTime())));
-    }
-
-    private Time findTimeById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{id}, ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))));
+    public Long insert(Map<String, Object> reservation) {
+        Long reservationId = simpleJdbcInsert.executeAndReturnKeyHolder(reservation).getKey().longValue();
+        return reservationId;
     }
 
     public List<Reservation> findAll() {

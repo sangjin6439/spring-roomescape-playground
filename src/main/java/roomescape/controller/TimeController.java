@@ -19,15 +19,15 @@ import roomescape.domain.Time;
 import roomescape.dto.RequestTimeDto;
 import roomescape.global.CustomException;
 import roomescape.global.ErrorCode;
-import roomescape.repository.TimeRepository;
+import roomescape.service.TimeService;
 
 @Controller
 public class TimeController {
 
-    private final TimeRepository timeRepository;
+    private final TimeService timeService;
 
-    public TimeController(final TimeRepository timeRepository) {
-        this.timeRepository = timeRepository;
+    public TimeController(final TimeService timeService) {
+        this.timeService = timeService;
     }
 
     @GetMapping("/time")
@@ -38,7 +38,7 @@ public class TimeController {
     @PostMapping("/times")
     @ResponseBody
     public ResponseEntity<Time> createTime(@Valid @RequestBody RequestTimeDto timeDto) {
-        Time time = timeRepository.insert(timeDto);
+        Time time = timeService.createTime(timeDto);
 
         URI location = UriComponentsBuilder.fromPath("/times/{id}").buildAndExpand(time.getId()).toUri();
         HttpHeaders headers = new HttpHeaders();
@@ -50,14 +50,14 @@ public class TimeController {
     @GetMapping("/times")
     @ResponseBody
     public ResponseEntity<List<Time>> findAllTime() {
-        List<Time> times = timeRepository.finaAll();
+        List<Time> times = timeService.findAll();
         return ResponseEntity.ok(times);
     }
 
     @DeleteMapping("/times/{id}")
     @ResponseBody
     public ResponseEntity<Time> deleteTimeById(@PathVariable("id") Long id) {
-        boolean time = timeRepository.deleteById(id);
+        boolean time = timeService.deleteById(id);
         if (!time) {
             throw new CustomException(ErrorCode.TIME_NOT_FOUND);
         }
