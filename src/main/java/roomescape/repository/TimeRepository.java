@@ -38,9 +38,6 @@ public class TimeRepository {
     }
 
     public boolean deleteById(Long id) {
-        if (jdbcTemplate.update("DELETE FROM time WHERE id = ?", id) == 1) {
-            return true;
-        }
-        return false;
+       return jdbcTemplate.update("DELETE FROM time WHERE id = ?", id) == 1;
     }
 }

@@ -11,4 +11,9 @@ public class CustomExceptionHandler {
     public ResponseEntity handleException(CustomException e){
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler
+    public ResponseEntity handleNumberFormatException(NumberFormatException e){
+        return ResponseEntity.badRequest().build();
+    }
 }
