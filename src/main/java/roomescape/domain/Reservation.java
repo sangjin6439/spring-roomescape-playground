@@ -7,6 +7,9 @@ public class Reservation {
     private String date;
     private String time;
 
+    public Reservation() {
+    }
+
     public Reservation(final Long id, final String name, final String date, final String time) {
         this.id = id;
         this.name = name;
@@ -28,5 +31,9 @@ public class Reservation {
 
     public String getTime() {
         return time;
+    }
+
+    public void setId(final long id) {
+        this.id = id;
     }
 }
