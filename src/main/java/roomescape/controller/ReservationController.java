@@ -65,10 +65,7 @@ public class ReservationController {
     @DeleteMapping("/reservations/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteReservationById(@PathVariable("id") Long id) {
-        boolean removed = reservationService.deleteById(id);
-        if (!removed) {
-            throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
-        }
+        reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

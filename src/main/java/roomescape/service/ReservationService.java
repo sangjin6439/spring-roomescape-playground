@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import roomescape.domain.Reservation;
-import roomescape.domain.Time;
 import roomescape.dto.RequestReservationDto;
+import roomescape.global.CustomException;
+import roomescape.global.ErrorCode;
 import roomescape.repository.ReservationRepository;
 import roomescape.repository.TimeRepository;
 
@@ -26,7 +27,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation createReservation(RequestReservationDto reservationDto){
+    public Reservation createReservation(RequestReservationDto reservationDto) {
 
         Map<String, String> reservations = new HashMap<>();
         reservations.put("name", reservationDto.getName());
@@ -35,23 +36,24 @@ public class ReservationService {
 
         Reservation reservation = reservationRepository.insert(reservations);
 
-        return  reservation;
+        return reservation;
     }
 
-    public List<Reservation> findAll(){
+    public List<Reservation> findAll() {
         List<Reservation> reservations = reservationRepository.findAll();
         return reservations;
     }
 
-    public Reservation findById(Long id){
+    public Reservation findById(Long id) {
         Reservation reservation = reservationRepository.findById(id);
         return reservation;
     }
 
     @Transactional
-    public boolean deleteById(Long id){
+    public void deleteById(Long id) {
         boolean removed = reservationRepository.deleteById(id);
-        return removed;
+        if (!removed) {
+            throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
+        }
     }
-
 }

@@ -57,10 +57,7 @@ public class TimeController {
     @DeleteMapping("/times/{id}")
     @ResponseBody
     public ResponseEntity<Time> deleteTimeById(@PathVariable("id") Long id) {
-        boolean time = timeService.deleteById(id);
-        if (!time) {
-            throw new CustomException(ErrorCode.TIME_NOT_FOUND);
-        }
+        timeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

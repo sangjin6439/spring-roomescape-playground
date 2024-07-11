@@ -12,7 +12,7 @@ public class CustomExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(NumberFormatException.class)
     public ResponseEntity handleNumberFormatException(NumberFormatException e){
         return ResponseEntity.badRequest().build();
     }

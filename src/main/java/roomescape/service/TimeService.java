@@ -10,6 +10,8 @@ import java.util.Map;
 
 import roomescape.domain.Time;
 import roomescape.dto.RequestTimeDto;
+import roomescape.global.CustomException;
+import roomescape.global.ErrorCode;
 import roomescape.repository.TimeRepository;
 
 @Service
@@ -39,8 +41,10 @@ public class TimeService {
     }
 
     @Transactional
-    public boolean deleteById(@PathVariable("id") Long id) {
+    public void deleteById(@PathVariable("id") Long id) {
         boolean time = timeRepository.deleteById(id);
-        return time;
+        if (!time) {
+            throw new CustomException(ErrorCode.TIME_NOT_FOUND);
+        }
     }
 }
