@@ -13,14 +13,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+
 import java.util.List;
+
 
 import jakarta.validation.Valid;
 import roomescape.domain.Reservation;
 import roomescape.dto.ReservationRequestDto;
 import roomescape.global.CustomException;
 import roomescape.global.ErrorCode;
+
 import roomescape.repository.ReservationRepository;
+
 
 @Controller
 public class ReservationController {
@@ -39,12 +43,15 @@ public class ReservationController {
     @GetMapping("/reservations")
     @ResponseBody
     public ResponseEntity<List<Reservation>> reservations() {
+
         List<Reservation> reservations = reservationRepository.findAll();
+
         return ResponseEntity.ok(reservations);
     }
 
     @GetMapping("/reservation/{id}")
     @ResponseBody
+
     public ResponseEntity<Reservation> reservation(@PathVariable("id") Long id) {
         Reservation reservation = reservationRepository.findById(id);
         return new ResponseEntity<>(reservation, HttpStatus.OK);
@@ -52,6 +59,7 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     @ResponseBody
+
     public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationRequestDto reservationDto) {
 
         Reservation reservation = reservationRepository.insert(reservationDto);
@@ -67,9 +75,11 @@ public class ReservationController {
     @ResponseBody
     public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id) {
         boolean removed = reservationRepository.deleteById(id);
+
         if (!removed) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
         return ResponseEntity.noContent().build();
     }
+
 }

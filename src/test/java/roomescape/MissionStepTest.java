@@ -1,10 +1,13 @@
 package roomescape;
 
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
 import roomescape.domain.Reservation;
 import roomescape.repository.ReservationRepository;
 
@@ -15,10 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -39,6 +44,7 @@ public class MissionStepTest {
 
     @Test
     @DisplayName("예약 관리 페이지 접근 및 예약 리스트 조회")
+
     void 이단계() {
         RestAssured.given().log().all()
                 .when().get("/reservation")
