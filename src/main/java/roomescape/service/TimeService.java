@@ -41,7 +41,7 @@ public class TimeService {
     }
 
     @Transactional
-    public void deleteById(@PathVariable("id") Long id) {
+    public void deleteById(Long id) {
         boolean time = timeRepository.deleteById(id);
         if (!time) {
             throw new CustomException(ErrorCode.TIME_NOT_FOUND);
