@@ -39,7 +39,6 @@ public class MissionStepTest {
     @Autowired
     private TimeRepository timeRepository;
 
-
     @Test
     @DisplayName(" 어드민 페이지 접근")
     void 일단계() {
@@ -143,7 +142,6 @@ public class MissionStepTest {
     @Test
     @DisplayName("예약 생성 후 DB 저장 확인 및 행 수 증가 확인")
     void 육단계() {
-
         //시간 추가
         Map<String, String> times = new HashMap<>();
         times.put("time","15:40");

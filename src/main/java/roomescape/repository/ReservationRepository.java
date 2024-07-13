@@ -10,7 +10,6 @@ import java.util.Map;
 
 import roomescape.domain.Reservation;
 import roomescape.domain.Time;
-
 @Repository
 public class ReservationRepository {
 
@@ -60,5 +59,4 @@ public class ReservationRepository {
     public boolean deleteById(Long id) {
         return jdbcTemplate.update("DELETE FROM reservation WHERE id = ?", id) == 1;
     }
-
 }

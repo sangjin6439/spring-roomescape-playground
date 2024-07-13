@@ -3,7 +3,7 @@ package roomescape.global;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-
+  
     RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "예약을 찾을 수 없습니다."),
     TIME_NOT_FOUND(HttpStatus.BAD_REQUEST, "시간을 찾을 수 없습니다.");
 

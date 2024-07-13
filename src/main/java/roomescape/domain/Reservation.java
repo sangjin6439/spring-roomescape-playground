@@ -9,7 +9,7 @@ public class Reservation {
 
     public Reservation() {
     }
-
+  
     public Reservation(final Long id, final String name, final String date, final Time time) {
         this.id = id;
         this.name = name;
