@@ -9,21 +9,22 @@ import java.util.Map;
 
 import roomescape.domain.Reservation;
 import roomescape.dto.RequestReservationDto;
+import roomescape.dto.ResponseReservationDto;
+import roomescape.dto.ResponseTimeDto;
 import roomescape.global.CustomException;
 import roomescape.global.ErrorCode;
 import roomescape.repository.ReservationRepository;
-import roomescape.repository.TimeRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final TimeRepository timeRepository;
+    private final TimeService timeService;
 
-    public ReservationService(final ReservationRepository reservationRepository, final TimeRepository timeRepository) {
+    public ReservationService(final ReservationRepository reservationRepository, final TimeService timeService) {
         this.reservationRepository = reservationRepository;
-        this.timeRepository = timeRepository;
+        this.timeService = timeService;
     }
 
     @Transactional
@@ -38,14 +39,22 @@ public class ReservationService {
         return reservation;
     }
 
-    public List<Reservation> findAll() {
+    public List<ResponseReservationDto> findAll() {
         List<Reservation> reservations = reservationRepository.findAll();
-        return reservations;
+
+        return reservations.stream()
+                .map(reservation -> new ResponseReservationDto(reservation.getId(), reservation.getName(), reservation.getDate(),
+                        timeService.findById(reservation.getTime().getId())))
+                .toList();
+
     }
 
-    public Reservation findById(Long id) {
+    public ResponseReservationDto findById(Long id) {
         Reservation reservation = reservationRepository.findById(id);
-        return reservation;
+        ResponseTimeDto responseTimeDto = timeService.findById(reservation.getTime().getId());
+
+        return new ResponseReservationDto(reservation.getId(), reservation.getName(), reservation.getDate(),
+                responseTimeDto);
     }
 
     @Transactional

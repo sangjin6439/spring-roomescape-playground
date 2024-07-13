@@ -17,8 +17,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import roomescape.domain.Reservation;
 import roomescape.dto.RequestReservationDto;
-import roomescape.global.CustomException;
-import roomescape.global.ErrorCode;
+import roomescape.dto.ResponseReservationDto;
 import roomescape.service.ReservationService;
 
 @Controller
@@ -50,16 +49,16 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     @ResponseBody
-    public ResponseEntity<List<Reservation>> findAllReservations() {
-        List<Reservation> reservations = reservationService.findAll();
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<List<ResponseReservationDto>> findAllReservations() {
+        List<ResponseReservationDto> reservationDtos = reservationService.findAll();
+        return ResponseEntity.ok(reservationDtos);
     }
 
     @GetMapping("/reservation/{id}")
     @ResponseBody
-    public ResponseEntity<Reservation> findReservationById(@PathVariable("id") Long id) {
-        Reservation reservation = reservationService.findById(id);
-        return ResponseEntity.ok(reservation);
+    public ResponseEntity<ResponseReservationDto> findReservationById(@PathVariable("id") Long id) {
+        ResponseReservationDto reservationDtos = reservationService.findById(id);
+        return ResponseEntity.ok(reservationDtos);
     }
 
     @DeleteMapping("/reservations/{id}")

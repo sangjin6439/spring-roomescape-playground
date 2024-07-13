@@ -32,7 +32,7 @@ public class TimeRepository {
         return jdbcTemplate.query("SELECT * FROM time", (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time")));
     }
 
-    public Time findTimeById(Long id) {
+    public Time findById(Long id) {
         return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?", new Object[]{id}, ((rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time"))));
     }
 

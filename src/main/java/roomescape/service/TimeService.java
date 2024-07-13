@@ -2,7 +2,6 @@ package roomescape.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 import roomescape.domain.Time;
 import roomescape.dto.RequestTimeDto;
+import roomescape.dto.ResponseTimeDto;
 import roomescape.global.CustomException;
 import roomescape.global.ErrorCode;
 import roomescape.repository.TimeRepository;
@@ -35,9 +35,18 @@ public class TimeService {
         return time;
     }
 
-    public List<Time> findAll() {
+    public List<ResponseTimeDto> findAll() {
         List<Time> times = timeRepository.finaAll();
-        return times;
+
+        return times.stream()
+                .map(time -> new ResponseTimeDto(time.getId(), time.getTime()))
+                .toList();
+    }
+
+    public ResponseTimeDto findById(final Long id) {
+        Time time = timeRepository.findById(id);
+
+        return new ResponseTimeDto(time.getId(), time.getTime());
     }
 
     @Transactional
