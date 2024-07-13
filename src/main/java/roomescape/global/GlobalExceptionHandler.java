@@ -11,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
-public class CustomExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity handleException(CustomException e) {
         log.error("CustomException {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+        ErrorCode errorCode = e.getErrorCode();
+        ResponseErrorDto errorDto = new ResponseErrorDto(errorCode.getHttpStatus().value(), errorCode.getMessage(), e.getMessage());
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(e.getMessage());
     }
 
     @ExceptionHandler(NumberFormatException.class)

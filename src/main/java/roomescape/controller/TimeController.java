@@ -1,6 +1,7 @@
 package roomescape.controller;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,11 +41,17 @@ public class TimeController {
     public ResponseEntity<Time> createTime(@Valid @RequestBody RequestTimeDto timeDto) {
         Time time = timeService.createTime(timeDto);
 
-        URI location = UriComponentsBuilder.fromPath("/times/{id}").buildAndExpand(time.getId()).toUri();
+        URI location = getUri(time.getId());
+
+        return ResponseEntity.created(location)
+                .body(time);
+    }
+
+    private URI getUri(Long id) {
+        URI location = UriComponentsBuilder.fromPath("/times/{id}").buildAndExpand(id).toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
-
-        return ResponseEntity.created(location).body(time);
+        return location;
     }
 
     @GetMapping("/times")
