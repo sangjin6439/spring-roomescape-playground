@@ -35,7 +35,6 @@ public class ReservationService {
         reservations.put("time_id", reservationDto.getTime());
 
         Reservation reservation = reservationRepository.insert(reservations);
-
         return reservation;
     }
 
